@@ -1,0 +1,19 @@
+using sysbus
+
+$name?="mimxrt685_evk_mimxrt685s_cm33"
+mach create $name
+
+machine LoadPlatformDescription $ORIGIN/mimxrt685-evk.repl
+
+showAnalyzer flexcomm0
+
+$bin?=@./hello-world.elf
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu0 VectorTableOffset 0x08001000
+    # cpu0 EnableProfilerCollapsedStack $ORIGIN/rust-app-profile true
+"""
+
+runMacro $reset
