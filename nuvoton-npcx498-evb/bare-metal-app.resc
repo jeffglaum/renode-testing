@@ -4,6 +4,7 @@ $name?="npcx490m_evb"
 mach create $name
 
 machine LoadPlatformDescription $ORIGIN/npcx490m-evb.repl
+#machine StartGdbServer 3333
 
 showAnalyzer uart1
 
@@ -12,8 +13,10 @@ $bin?=@./uart.elf
 macro reset
 """
     sysbus LoadELF $bin
-    cpu0 VectorTableOffset 0x60000040
-    cpu0 EnableProfilerCollapsedStack $ORIGIN/rust-app-profile true
+    cpu VectorTableOffset 0x60000040
+    # set pc to the start of the bootrom to launch the bootloader
+    sysbus.cpu PC 0x00000000
+    #cpu EnableProfilerCollapsedStack $ORIGIN/rust-app-profile true
 """
 
 runMacro $reset
