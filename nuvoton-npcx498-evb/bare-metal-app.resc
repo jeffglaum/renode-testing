@@ -1,0 +1,19 @@
+using sysbus
+
+$name?="npcx490m_evb"
+mach create $name
+
+machine LoadPlatformDescription $ORIGIN/npcx490m-evb.repl
+
+showAnalyzer uart1
+
+$bin?=@./uart.elf
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    cpu0 VectorTableOffset 0x60000040
+    cpu0 EnableProfilerCollapsedStack $ORIGIN/rust-app-profile true
+"""
+
+runMacro $reset
